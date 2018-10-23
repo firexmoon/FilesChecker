@@ -410,12 +410,13 @@ if __name__ == '__main__':
         print('无效的参数，结束运行。')
         sys.exit()
 
-    db_file_full_path = os.path.join(main_dir_path, db_file_name)
-
+    # db_file_full_path = os.path.join(main_dir_path, db_file_name)
+    db_file_full_path = '/report/' + db_file_name
+    
     if print_to_file:
         print_file_name = db_file_name + '.report.' \
                           + datetime.datetime.now().strftime('%Y-%m-%d %H%M%S') + '.txt'
-        print_file = open(os.path.join(main_dir_path, print_file_name), 'w', encoding='utf-8')
+        print_file = open('/report/' + print_file_name, 'w', encoding='utf-8')
 
     if actParam == '-g':
         gen_files_info_db()
