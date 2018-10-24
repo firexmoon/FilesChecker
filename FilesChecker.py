@@ -128,11 +128,7 @@ def get_dir_db_node(dir_path, create_new_node):
 
 def gen_file_info(file_full_path):
     file_rel_path = os.path.relpath(file_full_path, main_dir_path)
-
-    # 跳过忽略的文件
-    if is_ignore_file(file_full_path):
-        return None
-
+    
     # 获取文件大小
     try:
         file_size = get_file_size(file_full_path)
@@ -210,6 +206,10 @@ def gen_files_info_db():
         for file_name in files:
             file_full_path = os.path.join(parent, file_name)
             file_rel_path = os.path.relpath(file_full_path, main_dir_path)
+            # 跳过忽略的文件
+            if is_ignore_file(file_full_path):
+                continue
+
             print('\tfile: ' + file_rel_path, file=print_file)
 
             file_info = gen_file_info(file_full_path)
@@ -229,9 +229,6 @@ def check_files(do_update):
             gen_files_info_db()
         return
 
-    if do_update:
-        files_info_db['time_start'] = get_cur_time()
-
     print(file=print_file)
     print('--------------------------------------------------------', file=print_file)
     print(db_file_name, file=print_file)
@@ -242,6 +239,8 @@ def check_files(do_update):
     print('DB time_finish: ' + files_info_db['time_finish'], file=print_file)
     print('--------------------------------------------------------', file=print_file)
 
+    files_info_db['time_start'] = get_cur_time()
+        
     for parent, dirs, files in os.walk(main_dir_path):
         if is_ignore_file(parent):
             continue
@@ -348,10 +347,11 @@ def check_files(do_update):
                     files_failed.append(file_rel_path)
                     continue
 
-                print('\t\tIdentical.', file=print_file)
+                # print('\t\tIdentical.', file=print_file)
 
+    files_info_db['time_finish'] = get_cur_time()
+    
     if do_update:
-        files_info_db['time_finish'] = get_cur_time()
         save_db_file()
 
 
