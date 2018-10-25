@@ -1,5 +1,10 @@
 # coding=utf-8
 
+# http://www.apache.org/licenses/LICENSE-2.0
+# V1.2 2018-10-25
+# Author: libo <firexmoon@gmail.com>
+
+
 import os
 import sys
 import hashlib
@@ -7,13 +12,18 @@ import json
 import datetime
 import hmac
 
-hmac_key = b'firexmoon_FilesChecker_hmac_key_2018-9-21 22:05:54'
+# ----customization----
 db_admin = 'libo'
+hmac_key = b'firexmoon_FilesChecker_hmac_key'
+timezone_delta = 0
+print_to_file = True
+force_db_path = ''
+# ---------------------
+
 db_file_name = 'files_checker.' + db_admin + '.db'
 db_file_full_path = ''
 read_buffer_size = 1024 * 512
 main_dir_path = ''
-print_to_file = True
 print_file = sys.stdout
 
 files_lose = []
@@ -79,7 +89,7 @@ def get_cur_time(short=False):
     fotmat_str = '%Y-%m-%d %H:%M:%S.%f'
     if short:
         fotmat_str = '%Y-%m-%d %H%M%S'
-    return (datetime.datetime.now() + datetime.timedelta(hours=0)).strftime(fotmat_str)
+    return (datetime.datetime.now() + datetime.timedelta(hours=timezone_delta)).strftime(fotmat_str)
 
 
 def compute_file_hash(filename):
@@ -413,12 +423,17 @@ if __name__ == '__main__':
         print('无效的参数，结束运行。')
         sys.exit()
 
-    db_file_full_path = os.path.join(main_dir_path, db_file_name)
+    if force_db_path != '':
+        db_file_full_path = os.path.join(force_db_path, db_file_name)
+    else:
+        db_file_full_path = os.path.join(main_dir_path, db_file_name)
 
     if print_to_file:
-        print_file_name = db_file_name + '.report.' \
-                          + get_cur_time(short=True) + '.txt'
-        print_file = open(os.path.join(main_dir_path, print_file_name), 'w', encoding='utf-8')
+        print_file_name = db_file_name + '.report.' + get_cur_time(short=True) + '.txt'
+        if force_db_path != '':
+            print_file = open(os.path.join(force_db_path, print_file_name), 'w', encoding='utf-8')
+        else:
+            print_file = open(os.path.join(main_dir_path, print_file_name), 'w', encoding='utf-8')
 
     if actParam == '-g':
         gen_files_info_db()
