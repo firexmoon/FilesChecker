@@ -75,8 +75,11 @@ def is_ignore_file(file_full_path):
                 return True
 
 
-def get_cur_time():
-    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+def get_cur_time(short=False):
+    fotmat_str = '%Y-%m-%d %H:%M:%S.%f'
+    if short:
+        fotmat_str = '%Y-%m-%d %H%M%S'
+    return (datetime.datetime.now() + datetime.timedelta(hours=8)).strftime(fotmat_str)
 
 
 def compute_file_hash(filename):
@@ -415,7 +418,7 @@ if __name__ == '__main__':
     
     if print_to_file:
         print_file_name = db_file_name + '.report.' \
-                          + datetime.datetime.now().strftime('%Y-%m-%d %H%M%S') + '.txt'
+                          + get_cur_time(short=True) + '.txt'
         print_file = open('/report/' + print_file_name, 'w', encoding='utf-8')
 
     if actParam == '-g':
