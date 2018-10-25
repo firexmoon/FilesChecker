@@ -79,7 +79,7 @@ def get_cur_time(short=False):
     fotmat_str = '%Y-%m-%d %H:%M:%S.%f'
     if short:
         fotmat_str = '%Y-%m-%d %H%M%S'
-    return (datetime.datetime.now() + datetime.timedelta(hours=8)).strftime(fotmat_str)
+    return (datetime.datetime.now() + datetime.timedelta(hours=0)).strftime(fotmat_str)
 
 
 def compute_file_hash(filename):
