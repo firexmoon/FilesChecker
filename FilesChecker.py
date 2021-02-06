@@ -20,9 +20,10 @@ print_to_file = True
 force_db_path = ''
 # ---------------------
 
+db_dir_name = '.files_checker'
 db_file_name = 'files_checker.' + db_admin + '.db'
 db_file_full_path = ''
-read_buffer_size = 1024 * 512
+read_buffer_size = 1024 * 1024
 main_dir_path = ''
 print_file = sys.stdout
 
@@ -31,7 +32,8 @@ files_change = []
 files_new = []
 files_failed = []
 
-###
+'''
+jsonDB:
 {
     'admin': db_admin,
     'db_ver': '2.0',
@@ -39,8 +41,7 @@ files_failed = []
         'files': {
             'file_1': {
                 'size': 1024,
-                'sha256': '',
-                'timestamp': ''
+                'sha256': ''
             }
         },
         'dirs': {
@@ -50,10 +51,12 @@ files_failed = []
             }
         }
     },
-    'timestamp': '',
+    'time_start': '',
+    'time_finish': '',
     'hmac': ''
 }
-###
+'''
+
 files_info_db = {
     'admin': db_admin,
     'db_ver': '2.0',
@@ -426,14 +429,17 @@ if __name__ == '__main__':
     if force_db_path != '':
         db_file_full_path = os.path.join(force_db_path, db_file_name)
     else:
-        db_file_full_path = os.path.join(main_dir_path, db_file_name)
+        db_dir_full_path = os.path.join(main_dir_path, db_dir_name)
+        if not os.path.isdir(db_dir_full_path):
+            os.mkdir(db_dir_full_path)
+        db_file_full_path = os.path.join(db_dir_full_path, db_file_name)
 
     if print_to_file:
         print_file_name = db_file_name + '.report.' + get_cur_time(short=True) + '.txt'
         if force_db_path != '':
             print_file = open(os.path.join(force_db_path, print_file_name), 'w', encoding='utf-8')
         else:
-            print_file = open(os.path.join(main_dir_path, print_file_name), 'w', encoding='utf-8')
+            print_file = open(os.path.join(db_dir_full_path, print_file_name), 'w', encoding='utf-8')
 
     if actParam == '-g':
         gen_files_info_db()
